@@ -1,22 +1,28 @@
 const express = require("express");
+const cors = require("cors");
 const connectDB = require("./config/db");
 
 connectDB();
 
 const app = express();
+
+// ✅ CORS MUST BE BEFORE ROUTES
+app.use(
+  cors({
+    origin: [
+      "http://localhost:5173",
+      "https://node-backend-api-9iw2.onrender.com",
+    ],
+    credentials: true,
+  })
+);
+
 app.use(express.json());
 
-// auth routes
-const authRoutes = require("./routes/auth");
-app.use("/auth", authRoutes);
-
-// user routes
-const userRoutes = require("./routes/users");
-app.use("/users", userRoutes);
-
-// task routes ✅ ONLY ONCE
-const taskRoutes = require("./routes/tasks");
-app.use("/tasks", taskRoutes);
+// routes
+app.use("/auth", require("./routes/auth"));
+app.use("/users", require("./routes/users"));
+app.use("/tasks", require("./routes/tasks"));
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
