@@ -6,13 +6,17 @@ connectDB();
 const app = express();
 app.use(express.json());
 
-// ⬇️ THIS MUST EXIST
+// auth routes
 const authRoutes = require("./routes/auth");
 app.use("/auth", authRoutes);
 
-// ⬇️ existing user routes
+// user routes
 const userRoutes = require("./routes/users");
 app.use("/users", userRoutes);
+
+// task routes ✅ ONLY ONCE
+const taskRoutes = require("./routes/tasks");
+app.use("/tasks", taskRoutes);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
