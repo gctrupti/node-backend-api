@@ -1,23 +1,21 @@
-const express = require("express");
-const router = express.Router();
+const jwt = require("jsonwebtoken");
 
-const authMiddleware = require("../middleware/authMiddleware");
-const Task = require("../models/Task");
+const authMiddleware = (req, res, next) => {
+  const authHeader = req.headers.authorization;
 
-router.post("/", authMiddleware, async (req, res) => {
-  try {
-    const { title, description } = req.body;
-
-    const task = await Task.create({
-      title,
-      description,
-      user: req.userId
-    });
-
-    res.status(201).json(task);
-  } catch (err) {
-    res.status(500).json({ message: err.message });
+  if (!authHeader || !authHeader.startsWith("Bearer ")) {
+    return res.status(401).json({ error: "No token provided" });
   }
-});
 
-module.exports = router;
+  const token = authHeader.split(" ")[1];
+
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    req.userId = decoded.userId;
+    next();
+  } catch (error) {
+    res.status(401).json({ error: "Invalid token" });
+  }
+};
+
+module.exports = authMiddleware;
