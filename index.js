@@ -11,7 +11,7 @@ app.use(
   cors({
     origin: [
       "http://localhost:5173",
-      "https://node-backend-api-9iw2.onrender.com",
+      "https://react-frontend-iota-neon.vercel.app" // 👈 FRONTEND URL ONLY
     ],
     credentials: true,
   })
